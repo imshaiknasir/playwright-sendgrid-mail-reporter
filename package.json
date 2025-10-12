@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "NODE_ENV=development npx playwright test"
+    "test": "cross-env NODE_ENV=development npx playwright test"
   },
   "repository": {
     "type": "git",
@@ -25,15 +25,15 @@
   },
   "homepage": "https://github.com/estruyf/playwright-mail-reporter#readme",
   "dependencies": {
-    "ansi-to-html": "^0.7.2",
-    "nodemailer": "^6.9.14"
+    "@sendgrid/mail": "^8.1.6",
+    "ansi-to-html": "^0.7.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
     "@tsconfig/recommended": "^1.0.7",
     "@types/node": "^20.14.9",
-    "@types/nodemailer": "^6.4.15",
     "dotenv": "^16.4.5",
+    "cross-env": "^7.0.3",
     "typescript": "^5.5.2"
   },
   "peerDependencies": {

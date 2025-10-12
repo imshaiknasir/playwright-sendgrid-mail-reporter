@@ -8,12 +8,11 @@ This reporter allows you to send an email with the test results after the test r
 
 ## Prerequisites
 
-To use this reporter, you will need to have the SMTP server details to send out the emails. Make sure you have the following details:
+To use this reporter, you need a SendGrid account with an API key that has permission to send mail. Make sure you have the following ready:
 
-- Host
-- Port
-- Username
-- Password
+- SendGrid API key
+- Verified sender email address (either a Single Sender or Domain Authenticated sender)
+- One or more recipient email addresses (comma separated)
 
 ## Installation
 
@@ -35,41 +34,35 @@ export default defineConfig({
     [
       "playwright-mail-reporter",
       {
-        host: "<host>",
-        port: "<port>",
-        secure: "<boolean>", // Optional, defaults to true
-        username: "<username>",
-        password: "<password>",
-        from: "<from>",
-        to: "<to>", // Comma separated list of email addresses
+        from: process.env.SENDGRID_FROM_EMAIL,
+        to: process.env.SENDGRID_TO_EMAILS,
         subject: "<subject>",
-        apiKey: "<api>",
+        mailOnSuccess: true,
+        linkToResults: "<optional link>",
+        showError: false,
+        quiet: false,
+        debug: false,
       },
     ],
   ],
 });
 ```
 
-Here is an example of how you can configure the reporter with Resend:
+### Environment variables
 
-```javascript
-import { defineConfig } from "@playwright/test";
+Create a `.env` file in the root of your project (next to `playwright.config.ts`) with the following keys:
 
-export default defineConfig({
-  reporter: [
-    [
-      "playwright-mail-reporter",
-      {
-        host: "smtp.resend.com",
-        port: 465,
-        username: "resend",
-        password: `<YOUR_API_KEY>`,
-        from: "Elio <no-reply@elio.dev>",
-        to: "Elio <elio@struyfconsulting.be>",
-      },
-    ],
-  ],
-});
+```bash
+SENDGRID_API_KEY=SG.xxxxxx
+SENDGRID_FROM_EMAIL=reports@example.com
+SENDGRID_TO_EMAILS=qa@example.com,dev@example.com
+SENDGRID_REPLY_TO=support@example.com # optional
+SENDGRID_SUBJECT=Playwright Test Results # optional
+SENDGRID_LINK_TO_RESULTS=https://ci.example.com/run/123 # optional
+SENDGRID_MAIL_ON_SUCCESS=true # defaults to true
+SENDGRID_SHOW_ERROR=false # defaults to false
+SENDGRID_QUIET=false # defaults to false
+SENDGRID_DEBUG=false # defaults to false, logs config in dev mode
 ```
 
 > More information on how to use reporters can be found in the [Playwright documentation](https://playwright.dev/docs/test-reporters).
@@ -80,10 +73,7 @@ The reporter supports the following configuration options:
 
 | Option          | Description                                                           | Required | Default                   |
 | --------------- | --------------------------------------------------------------------- | -------- | ------------------------- |
-| `host`          | The SMTP server host                                                  | `true`   | `undefined`               |
-| `port`          | The SMTP server port                                                  | `true`   | `undefined`               |
-| `username`      | The SMTP server username                                              | `true`   | `undefined`               |
-| `password`      | The SMTP server password                                              | `true`   | `undefined`               |
+| `sendGridApiKey`| SendGrid API key used for authentication                              | `true`   | `undefined`               |
 | `from`          | The email address from which the email will be sent                   | `true`   | `undefined`               |
 | `to`            | The email addresses to which the email will be sent (comma separated) | `true`   | `undefined`               |
 | `subject`       | The subject of the email                                              | `false`  | `Playwright Test Results` |
@@ -91,6 +81,8 @@ The reporter supports the following configuration options:
 | `mailOnSuccess` | Send the email on success                                             | `false`  | `true`                    |
 | `showError`     | Show the error details in the email                                   | `false`  | `false`                   |
 | `quiet`         | Do not show any output in the console                                 | `false`  | `false`                   |
+| `debug`         | Log additional debug info (options, safe)                             | `false`  | `false`                   |
+| `replyTo`       | Reply-to email address                                                | `false`  | `undefined`               |
 
 <br />
 

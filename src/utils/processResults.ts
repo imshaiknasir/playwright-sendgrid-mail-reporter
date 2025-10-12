@@ -1,5 +1,6 @@
+import { basename } from "path";
 import { Suite } from "@playwright/test/reporter";
-import { MailReporterOptions } from "..";
+import type { MailReporterOptions } from "../types";
 import {
   getHtmlTable,
   getSummaryDetails,
@@ -7,19 +8,21 @@ import {
   getTestsPerFile,
   getTotalStatus,
 } from ".";
-import { basename } from "path";
 import { styles } from "../constants";
-import nodemailer from "nodemailer";
+import sgMail, { MailDataRequired } from "@sendgrid/mail";
 
 export const processResults = async (
   suite: Suite | undefined,
   options: MailReporterOptions
 ) => {
-  if (
-    !options.host ||
-    !options.port
-  ) {
-    console.error("Missing SMTP options");
+  if (!suite) {
+    return;
+  }
+
+  const configErrors = options.configErrors;
+
+  if (!options.sendGridApiKey) {
+    console.error("Missing SendGrid API key");
     return;
   }
 
@@ -33,31 +36,12 @@ export const processResults = async (
     return;
   }
 
-  if (!suite) {
+  if (configErrors?.length) {
+    console.error(configErrors.join("; "));
     return;
   }
 
-  const transportOptions: {
-      host: string;
-      secure?: boolean;
-      port: number;
-      auth?: {
-          user: string;
-          pass: string;
-      };
-  } = {
-      host: options.host,
-      secure: options.secure,
-      port: options.port,
-  };
-  if (options.username && options.password) {
-      transportOptions.auth = {
-          user: options.username,
-          pass: options.password,
-      };
-  }
-
-  const transporter = nodemailer.createTransport(transportOptions);
+  sgMail.setApiKey(options.sendGridApiKey);
 
   const totalStatus = getTotalStatus(suite.suites);
   const summary = getSummaryDetails(suite);
@@ -93,13 +77,14 @@ export const processResults = async (
     return;
   }
 
-  const toFields = options.to.split(",").map((to) => to.trim());
+  const toFields = options.to
+    .split(",")
+    .map((to) => to.trim())
+    .filter(Boolean);
 
-  const info = await transporter.sendMail({
-    from: options.from,
-    to: toFields.join(", "),
-    subject: `${options.subject} - ${hasFailed ? "Failed" : "Success"}`,
-    html: `<h2 style="${styles.heading2}">Summary</h2>
+  const dynamicSubject = `${options.subject} - ${hasFailed ? "Failed" : "Success"}`;
+
+  const htmlContent = `<h2 style="${styles.heading2}">Summary</h2>
 ${summary}
 
 <h2 style="${styles.heading2}">Test results</h2>
@@ -110,8 +95,30 @@ ${
     ? `<br/><hr/><br/><a style="${styles.anchor}" href="${options.linkToResults}">View results</a>`
     : ""
 }
-    `,
-  });
+  `;
 
-  console.log(`Message sent: ${info.messageId}`);
+  const msg: MailDataRequired = {
+    personalizations: [
+      {
+        to: toFields.map((email) => ({ email })),
+      },
+    ],
+    from: { email: options.from },
+    replyTo: options.replyTo ? { email: options.replyTo } : undefined,
+    subject: dynamicSubject,
+    html: htmlContent,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log("SendGrid: message sent successfully");
+  } catch (error) {
+    const errorMessage =
+      (error as { response?: { body?: unknown }; message?: string }).message ||
+      "SendGrid: failed to send message";
+    console.error(errorMessage);
+    if ((error as { response?: { body?: unknown } }).response?.body) {
+      console.error(JSON.stringify((error as { response: { body: unknown } }).response.body));
+    }
+  }
 };

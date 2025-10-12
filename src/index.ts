@@ -6,36 +6,15 @@ import type {
   FullResult,
   TestResult,
 } from "@playwright/test/reporter";
-import { processResults } from "./utils";
-
-export interface MailReporterOptions {
-  // SMTP options
-  host?: string;
-  port?: number;
-  secure?: boolean;
-  username?: string;
-  password?: string;
-  // Mail options
-  from: string | undefined;
-  to: string | undefined;
-  subject: string;
-  mailOnSuccess?: boolean;
-  linkToResults?: string;
-  showError?: boolean;
-  quiet?: boolean;
-  debug?: boolean;
-}
+import { ensureConfig, logConfigErrors, processResults } from "./utils";
+import type { MailReporterOptions } from "./types";
 
 class MailReporter implements Reporter {
   private suite: Suite | undefined;
+  private options: MailReporterOptions;
 
-  constructor(private options: MailReporterOptions) {
+  constructor(options: MailReporterOptions) {
     const defaultOptions: MailReporterOptions = {
-      host: undefined,
-      port: undefined,
-      secure: true,
-      username: undefined,
-      password: undefined,
       from: undefined,
       to: undefined,
       subject: "Playwright Test Results",
@@ -46,24 +25,28 @@ class MailReporter implements Reporter {
       debug: false,
     };
 
-    this.options = { ...defaultOptions, ...options };
+    this.options = { ...defaultOptions, ...ensureConfig(options) };
 
     // Set default options
-    if (typeof options.mailOnSuccess === "undefined") {
+    if (typeof this.options.mailOnSuccess === "undefined") {
       this.options.mailOnSuccess = true;
     }
 
     console.log(`Using the Mail Reporter`);
 
+    if (this.options.configErrors?.length) {
+      logConfigErrors(this.options.configErrors);
+    }
+
     if (process.env.NODE_ENV === "development" || this.options.debug) {
       console.log(`Using debug mode`);
 
       // Do not return the API key
-      const clonedOptions = Object.assign({}, this.options);
-      clonedOptions.password = clonedOptions.password
-        ? "**********"
-        : "NOT DEFINED";
-      console.log(`Options: ${JSON.stringify(clonedOptions, null, 2)}`);
+      const maskedOptions = {
+        ...this.options,
+        sendGridApiKey: this.options.sendGridApiKey ? "**********" : undefined,
+      };
+      console.log(`Options: ${JSON.stringify(maskedOptions, null, 2)}`);
     }
   }
 

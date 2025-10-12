@@ -9,4 +9,5 @@ export * from "./getTestTags";
 export * from "./getTestTitle";
 export * from "./getTestsPerFile";
 export * from "./getTotalStatus";
+export * from "./config";
 export * from "./processResults";

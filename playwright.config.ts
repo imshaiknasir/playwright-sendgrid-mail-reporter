@@ -1,4 +1,4 @@
-import { MailReporterOptions } from "./src/index";
+import type { MailReporterOptions } from "./src/types";
 import { PlaywrightTestConfig, defineConfig, devices } from "@playwright/test";
 
 if (process.env.NODE_ENV === "development") {
@@ -18,18 +18,7 @@ const config: PlaywrightTestConfig<{}, {}> = {
   reporter: [
     [
       "./src/index.ts",
-      {
-        host: "smtp.resend.com",
-        port: 465,
-        username: "resend",
-        password: process.env.PASSWORD,
-        from: "Elio <no-reply@elio.dev>",
-        to: "Elio <eliostruyf@gmail.com>",
-        subject: "E2E Test Results",
-        mailOnSuccess: true,
-        linkToResults: "https://github.com/estruyf/playwright-mail-reporter",
-        showError: true,
-      } as MailReporterOptions,
+      {} as MailReporterOptions,
     ],
   ],
   use: {
