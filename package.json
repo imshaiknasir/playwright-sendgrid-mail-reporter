@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/estruyf/playwright-mail-reporter.git"
+    "url": "git+https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter.git"
   },
   "keywords": [
     "playwright",
@@ -21,9 +21,9 @@
   "author": "Elio Struyf <elio@struyfconsulting.be>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/estruyf/playwright-mail-reporter/issues"
+    "url": "https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter/issues"
   },
-  "homepage": "https://github.com/estruyf/playwright-mail-reporter#readme",
+  "homepage": "https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter#readme",
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
     "ansi-to-html": "^0.7.2"

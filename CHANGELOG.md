@@ -2,13 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+- Enhance email report with pass/fail/skipped sections and improved summary.
+- Add optional HTML attachment (`attachHtmlReport` / `SENDGRID_ATTACH_HTML`).
+
 ## [0.0.9]
 
-- [#3](https://github.com/estruyf/playwright-mail-reporter/issues/3): Added secure option and make username plus password optional. Thanks to [Peter Zemljic](https://github.com/pzemljic-git)
+- [#3](https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter/issues/3): Added secure option and make username plus password optional. Thanks to [Peter Zemljic](https://github.com/pzemljic-git)
 
 ## [0.0.8]
 
-- [#1](https://github.com/estruyf/playwright-mail-reporter/issues/1): Remove style attributes from the error messages
+- [#1](https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter/issues/1): Remove style attributes from the error messages
 
 ## [0.0.7]
 
