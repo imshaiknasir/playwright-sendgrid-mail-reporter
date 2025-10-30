@@ -25,13 +25,14 @@ If you are still using the Nodemailer version, check out the original repo linke
 1. **Install** ([npm package](https://www.npmjs.com/package/playwright-sendgrid-mail-reporter))
 
    ```bash
-   npm install playwright-sendgrid-mail-reporter
+   npm install playwright-sendgrid-mail-reporter dotenv
    # or
-   yarn add playwright-sendgrid-mail-reporter
+   yarn add playwright-sendgrid-mail-reporter dotenv
    # or
-   pnpm add playwright-sendgrid-mail-reporter
+   pnpm add playwright-sendgrid-mail-reporter dotenv
    ```
 
+   The reporter loads environment variables via [`dotenv`](https://www.npmjs.com/package/dotenv). If you already use another loader (for example, `@dotenvx/dotenvx` or a framework’s built-in solution), keep your existing setup and skip installing `dotenv`.
 2. **Add environment variables** (create `.env` next to `playwright.config.ts`)
 
    ```bash
@@ -65,12 +66,14 @@ That’s it! The reporter reads configuration from environment variables, format
 ## Installation
 
 ```bash
-npm install playwright-sendgrid-mail-reporter
+npm install playwright-sendgrid-mail-reporter dotenv
 # or
-yarn add playwright-sendgrid-mail-reporter
+yarn add playwright-sendgrid-mail-reporter dotenv
 # or
-pnpm add playwright-sendgrid-mail-reporter
+pnpm add playwright-sendgrid-mail-reporter dotenv
 ```
+
+> Already using another solution to load environment variables? Install only `playwright-sendgrid-mail-reporter` and keep your existing setup.
 
 ---
 
