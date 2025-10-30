@@ -257,6 +257,50 @@ When you open a PR, please describe the change, include test notes, and confirm 
 
 ---
 
+## Publishing Guide
+
+Follow this checklist whenever you cut a new release to npm:
+
+1. **Pull latest changes**
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+2. **Update documentation and changelog**
+   - Document user-facing changes in `CHANGELOG.md`.
+   - Ensure README examples match the new behaviour.
+3. **Bump the version**
+   ```bash
+   npm version <patch|minor|major>
+   ```
+   This updates `package.json`, `package-lock.json`, and creates a git tag.
+4. **Install, build, and test**
+   ```bash
+   npm ci
+   npm run build
+   npx playwright test
+   ```
+5. **Verify the package contents**
+   ```bash
+   npm pack
+   ```
+   Inspect the generated `.tgz` to ensure only `dist`, `README.md`, and `LICENSE` are included.
+6. **Publish to npm**
+   ```bash
+   npm publish --access public
+   ```
+   Have your 2FA code ready if your npm account requires it.
+7. **Push commits and tags**
+   ```bash
+   git push origin main --follow-tags
+   ```
+8. **Create or update the GitHub release** (optional but recommended)  
+   Summarise the changes and link to the npm release.
+
+Keep `.env` files and API keys out of git history; rely on CI/CD secrets for automated publishes.
+
+---
+
 ## License & Credits
 
 - Licensed under [MIT](LICENSE).  
