@@ -1,12 +1,14 @@
 {
-  "name": "playwright-mail-reporter",
+  "name": "playwright-sendgrid-mail-reporter",
   "version": "0.0.9",
   "description": "Mail reporter for Playwright which allows you to send the test results via email.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "cross-env NODE_ENV=development npx playwright test"
+    "test": "cross-env NODE_ENV=development npx playwright test",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,11 @@
     "url": "https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter/issues"
   },
   "homepage": "https://github.com/imshaiknasir/playwright-sendgrid-mail-reporter#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
     "ansi-to-html": "^0.7.2"

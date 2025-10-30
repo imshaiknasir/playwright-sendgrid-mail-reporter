@@ -6,3 +6,4 @@ coverage
 /sendgrid-nodejs/
 
 .env
+*.tgz
